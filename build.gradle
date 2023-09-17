@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+}
+
+description = 'huijunl2'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'com.google.code.gson:gson:2.7'
+    testImplementation 'org.eclipse.jetty:jetty-server:9.2.28.v20190418'
+    testImplementation 'org.eclipse.jetty:jetty-servlet:9.2.28.v20190418'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+            destinationDirectory = file('gradle-target/classes')
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+            destinationDirectory = file('gradle-target/test-classes')
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+test {
+    reports {
+        html.destination = file('gradle-target/reports')
+        junitXml.destination = file('gradle-target/test-results')
+    }
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
