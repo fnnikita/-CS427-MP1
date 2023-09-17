@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="huijunl2">
+    <property environment="env"/>
+    <property name="junit.output.dir" value="ant-target/reports"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="huijunl2.classpath">
+        <!-- In the path declaration tag, introduce all the jar files in the "ant-libs" directory -->
+        <fileset dir="ant-libs" includes="*.jar"/>
+        <pathelement location="ant-target/test-classes"/>
+        <pathelement location="ant-target/classes"/>
+    </path>
+
+    <!-- Task for cleaning all files generated from last Ant build -->
+    <target name="clean">
+        <delete dir="ant-target/test-classes"/>
+        <delete dir="ant-target/classes"/>
+    </target>
+
+    <!-- Compile all source Java files from src/main/java to ant-target/classes -->
+    <target name="build">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <mkdir dir="ant-target/classes"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="ant-target/classes" includeantruntime="false" source="${source}" target="${target}" encoding="UTF-8">
+            <src path="src/main/java"/>
+            <include name="**/*.java"/>
+            <classpath refid="huijunl2.classpath"/>
+        </javac>
+    </target>
+
+    <!-- Compile all test Java files from src/test/java to ant-target/test-classes -->
+    <target name="build-test" depends="build">
+        <mkdir dir="ant-target/test-classes"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="ant-target/test-classes" includeantruntime="false" source="${source}" target="${target}" encoding="UTF-8">
+            <src path="src/test/java"/>
+            <include name="**/*.java"/>
+            <classpath refid="huijunl2.classpath"/>
+        </javac>
+        <!-- Copy all test resource files from src/test/resources to ant-target/test-classes -->
+        <copy todir="ant-target/test-classes">
+            <fileset dir="src/test/resources"/>
+        </copy>
+    </target>
+
+    <!-- – Define the actual test execution target -->
+    <target name="test" depends="build-test">
+        <mkdir dir="${junit.output.dir}"/>
+        <mkdir dir="${junit.output.dir}/html"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <batchtest todir="${junit.output.dir}">
+                <fileset dir="src/test/java">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+            <classpath refid="huijunl2.classpath"/>
+        </junit>
+        <junitreport>
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}/html"/>
+        </junitreport>
+        <echo message="Please find the final JUnit test report at: ${junit.output.dir}/html/index.html"/>
+    </target>
+</project>
